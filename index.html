@@ -78,6 +78,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Micr
   color:var(--ink2);cursor:pointer;user-select:none;transition:.15s;}
 .month.on{background:var(--brand);border-color:var(--brand);color:#fff;box-shadow:0 4px 10px rgba(37,99,235,.25);}
 .month:hover{border-color:var(--brand);}
+.month.quick{background:#f1f5f9;border-color:#e2e8f0;color:var(--ink2);font-weight:700;}
+.month.quick:hover{background:#e2e8f0;border-color:var(--brand);}
 /* ---------- layout ---------- */
 main{max-width:1200px;margin:0 auto;padding:30px 24px 72px;}
 .module{margin-top:46px;}
@@ -208,7 +210,9 @@ const MONTH_LABELS = MONTHS.map(m=>m+'月');
 const C_BRAND='#2563eb', C_BRAND2='#3b82f6', C_PREV='#cbd5e1', C_ACCENT='#0ea5e9';
 
 // ---------- state ----------
-let selected = new Set(MONTHS); // 默认全选
+// 默认仅筛选「最新有数据的26年月份」，避免同比被拉长到不完整年度导致口径失真
+const latestMonth = (P.filter(r=>r.year===Y26 && r.gmv>0).map(r=>r.month).sort((a,b)=>b-a)[0]) || MONTHS[MONTHS.length-1];
+let selected = new Set([latestMonth]); // 默认筛选到最新月份（非全选）
 const custYr = {}; // 客户明细饼图年份切换： dealer -> 26/25
 
 // ---------- helpers ----------
@@ -261,9 +265,18 @@ function chart(id){
 function buildFilter(){
   const box=document.getElementById('months');
   box.innerHTML='';
+  // 快捷：全部 / 清空
+  const allEl=document.createElement('div');
+  allEl.className='month quick'; allEl.textContent='全部';
+  allEl.onclick=()=>{ selected=new Set(MONTHS); buildFilter(); renderAll(); };
+  box.appendChild(allEl);
+  const clrEl=document.createElement('div');
+  clrEl.className='month quick'; clrEl.textContent='清空';
+  clrEl.onclick=()=>{ selected=new Set(); buildFilter(); renderAll(); };
+  box.appendChild(clrEl);
   MONTHS.forEach(m=>{
     const el=document.createElement('div');
-    el.className='month on'; el.textContent=m+'月'; el.dataset.m=m;
+    el.className='month'+(selected.has(m)?' on':''); el.textContent=m+'月'; el.dataset.m=m;
     el.onclick=()=>{
       if(selected.has(m)){ if(selected.size>0) selected.delete(m); }
       else selected.add(m);
@@ -291,9 +304,9 @@ function renderOverview(){
     xAxis:{type:'category', data:MONTH_LABELS, boundaryGap:false},
     yAxis:{type:'value', axisLabel:{formatter:v=>fmtWan(v)}, splitLine:{lineStyle:{color:'#eef1f6'}}},
     series:[
-      {name:'26年', type:'line', smooth:true, symbol:'circle', symbolSize:6, data:monthArr(P,Y26,selected,r=>1,1),
+      {name:'26年', type:'line', smooth:true, symbol:'circle', symbolSize:6, data:monthArr(P,Y26,null,r=>1,1),
         lineStyle:{width:3,color:C_BRAND}, itemStyle:{color:C_BRAND}, connectNulls:false},
-      {name:'25年', type:'line', smooth:true, symbol:'circle', symbolSize:5, data:monthArr(P,Y25,selected,r=>1,1),
+      {name:'25年', type:'line', smooth:true, symbol:'circle', symbolSize:5, data:monthArr(P,Y25,null,r=>1,1),
         lineStyle:{width:2,color:C_PREV,type:'dashed'}, itemStyle:{color:C_PREV}, connectNulls:false}
     ]
   });
