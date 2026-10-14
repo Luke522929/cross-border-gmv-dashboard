@@ -210,9 +210,10 @@ const MONTH_LABELS = MONTHS.map(m=>m+'月');
 const C_BRAND='#2563eb', C_BRAND2='#3b82f6', C_PREV='#cbd5e1', C_ACCENT='#0ea5e9';
 
 // ---------- state ----------
-// 默认仅筛选「最新有数据的26年月份」，避免同比被拉长到不完整年度导致口径失真
+// 默认筛选「1月 ~ 最新有数据的26年月份」的汇总（当前=1~9月），而非全选12月：
+// 26年仅有前9个月数据，若默认全选会把25年完整12月拉进来，导致同比口径失真。
 const latestMonth = (P.filter(r=>r.year===Y26 && r.gmv>0).map(r=>r.month).sort((a,b)=>b-a)[0]) || MONTHS[MONTHS.length-1];
-let selected = new Set([latestMonth]); // 默认筛选到最新月份（非全选）
+let selected = new Set(MONTHS.filter(m=>m<=latestMonth)); // 默认 1..latestMonth 汇总
 const custYr = {}; // 客户明细饼图年份切换： dealer -> 26/25
 
 // ---------- helpers ----------
