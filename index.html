@@ -227,7 +227,7 @@ function sumBy(recs, year, months, keyFn){
 function monthArr(recs, year, months, keyFn, key){
   const res=[];
   for(let mo=1;mo<=12;mo++){
-    if(!months.has(mo)){ res.push(null); continue; }
+    if(months && !months.has(mo)){ res.push(null); continue; }
     let s=0,has=false;
     for(const r of recs){ if(r.year===year && r.month===mo && keyFn(r)===key){ s+=r.gmv; has=true; } }
     res.push(has? s : null);
