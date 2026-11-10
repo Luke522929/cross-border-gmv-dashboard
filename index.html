@@ -339,11 +339,11 @@ function renderM2(){
   const defShow=lineTop.slice(0,8);
   const series=[], legendData=[], legendSel={};
   lineTop.forEach(p=>{
-    series.push({name:p, type:'line', smooth:true, symbol:'none', data:monthArr(P,Y26,selected,r=>r.platform,p),
+    series.push({name:p, type:'line', smooth:true, symbol:'none', data:monthArr(P,Y26,null,r=>r.platform,p),
       symbolSize:5, lineStyle:{width:2.5,color:colorPool(lineTop.indexOf(p))},
       itemStyle:{color:colorPool(lineTop.indexOf(p))}, connectNulls:false});
     legendData.push(p); legendSel[p]=defShow.includes(p);
-    series.push({name:p+'·25', type:'line', smooth:true, symbol:'none', data:monthArr(P,Y25,selected,r=>r.platform,p),
+    series.push({name:p+'·25', type:'line', smooth:true, symbol:'none', data:monthArr(P,Y25,null,r=>r.platform,p),
       lineStyle:{width:1.5,type:'dashed',color:colorPool(lineTop.indexOf(p))}, itemStyle:{color:colorPool(lineTop.indexOf(p))}, connectNulls:false});
     legendData.push(p+'·25'); legendSel[p+'·25']=false;
   });
@@ -385,10 +385,10 @@ function renderM3(){
   // line per dealer
   const series=[], legendData=[], legendSel={};
   dealerOrder.forEach(d=>{
-    series.push({name:d, type:'line', smooth:true, symbol:'none', data:monthArr(P.filter(r=>r.dealer===d),Y26,selected,r=>1,1),
+    series.push({name:d, type:'line', smooth:true, symbol:'none', data:monthArr(P.filter(r=>r.dealer===d),Y26,null,r=>1,1),
       lineStyle:{width:2.5}, connectNulls:false, color:colorPool(dealerOrder.indexOf(d))});
     legendData.push(d); legendSel[d]=true;
-    series.push({name:d+'·25', type:'line', smooth:true, symbol:'none', data:monthArr(P.filter(r=>r.dealer===d),Y25,selected,r=>1,1),
+    series.push({name:d+'·25', type:'line', smooth:true, symbol:'none', data:monthArr(P.filter(r=>r.dealer===d),Y25,null,r=>1,1),
       lineStyle:{width:1.5,type:'dashed'}, connectNulls:false, color:colorPool(dealerOrder.indexOf(d))});
     legendData.push(d+'·25'); legendSel[d+'·25']=false;
   });
@@ -429,10 +429,10 @@ function renderCust(d, gmv, yoy){
   // line: platforms top8
   const lt=topP.slice(0,8), series=[], lg=[], ls={};
   lt.forEach(p=>{
-    series.push({name:p, type:'line', smooth:true, symbol:'none', data:monthArr(P.filter(r=>r.dealer===d),Y26,selected,r=>r.platform,p),
+    series.push({name:p, type:'line', smooth:true, symbol:'none', data:monthArr(P.filter(r=>r.dealer===d),Y26,null,r=>r.platform,p),
       connectNulls:false, color:colorPool(lt.indexOf(p)), lineStyle:{width:2}});
     lg.push(p); ls[p]=true;
-    series.push({name:p+'·25', type:'line', smooth:true, symbol:'none', data:monthArr(P.filter(r=>r.dealer===d),Y25,selected,r=>r.platform,p),
+    series.push({name:p+'·25', type:'line', smooth:true, symbol:'none', data:monthArr(P.filter(r=>r.dealer===d),Y25,null,r=>r.platform,p),
       connectNulls:false, color:colorPool(lt.indexOf(p)), lineStyle:{width:1.5,type:'dashed'}});
     lg.push(p+'·25'); ls[p+'·25']=false;
   });
